@@ -33,6 +33,18 @@ def main():
             created_by text NOT NULL
         )"""
     )
+    cur.execute(
+        """CREATE TABLE IF NOT EXISTS joint_drafts (
+            id serial PRIMARY KEY,
+            lot text NOT NULL,
+            aroma double precision NOT NULL,
+            taste double precision NOT NULL,
+            liquor double precision NOT NULL,
+            created_by text NOT NULL,
+            status text NOT NULL DEFAULT 'pending',
+            cupping_id integer
+        )"""
+    )
     cur.execute("SELECT COUNT(*) FROM cuppings")
     if cur.fetchone()[0] == 0:
         for lot, aroma, taste, liquor in (("春茶-A", 8, 8, 7), ("夏茶-C", 5, 4, 6)):
