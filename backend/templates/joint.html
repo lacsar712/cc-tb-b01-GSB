@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>联评台</h1>
+{% if request.args.get("draft") %}
+  <p class="pass">草稿 {{ request.args.get("draft") }} 已提交，等待另一名审评员引用该草稿号交齐。</p>
+{% endif %}
+
+<form method="post" action="{{ url_for('create_draft') }}">
+  <h2>审评员甲：提交三项分，生成待合成草稿</h2>
+  <input name="lot" placeholder="批次（如 春芽）" required />
+  <input name="aroma" type="number" step="0.1" min="0" max="10" placeholder="香气" required />
+  <input name="taste" type="number" step="0.1" min="0" max="10" placeholder="滋味" required />
+  <input name="liquor" type="number" step="0.1" min="0" max="10" placeholder="汤色" required />
+  <button>提交草稿</button>
+</form>
+
+<form method="post" action="{{ url_for('synthesize') }}">
+  <h2>审评员乙：引用草稿号交齐三项分</h2>
+  <input name="draft_no" placeholder="草稿号（如 D-0001）" required />
+  <input name="aroma" type="number" step="0.1" min="0" max="10" placeholder="香气" required />
+  <input name="taste" type="number" step="0.1" min="0" max="10" placeholder="滋味" required />
+  <input name="liquor" type="number" step="0.1" min="0" max="10" placeholder="汤色" required />
+  <button>交齐并合成</button>
+</form>
+
+<h2>待合成草稿</h2>
+{% if pending %}
+<table>
+  <thead><tr><th>草稿号</th><th>批次</th><th>审评员甲</th><th>香气</th><th>滋味</th><th>汤色</th></tr></thead>
+  <tbody>
+    {% for d in pending %}
+    <tr>
+      <td>{{ d.draft_no }}</td><td>{{ d.lot }}</td><td>{{ d.taster_a }}</td>
+      <td>{{ d.aroma_a }}</td><td>{{ d.taste_a }}</td><td>{{ d.liquor_a }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>暂无待合成草稿。</p>
+{% endif %}
+
+<h2>已合成结果</h2>
+{% if done %}
+<table>
+  <thead><tr><th>草稿号</th><th>批次</th><th>审评员甲</th><th>审评员乙</th>
+    <th>香气均值</th><th>滋味均值</th><th>汤色均值</th><th>加权分</th><th>结论</th></tr></thead>
+  <tbody>
+    {% for d in done %}
+    <tr>
+      <td>{{ d.draft_no }}</td><td>{{ d.c_lot }}</td>
+      <td>{{ d.taster_a }}</td><td>{{ d.taster_b }}</td>
+      <td>{{ d.c_aroma }}</td><td>{{ d.c_taste }}</td><td>{{ d.c_liquor }}</td>
+      <td>{{ d.c_score }}</td>
+      <td class="{% if d.c_verdict == '通过' %}pass{% else %}fail{% endif %}">{{ d.c_verdict }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p>暂无已合成结果。</p>
+{% endif %}
+{% endblock %}

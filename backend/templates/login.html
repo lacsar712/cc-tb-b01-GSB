@@ -2,11 +2,11 @@
 {% block body %}
 <form method="post" action="{{ url_for('login') }}">
   <h1>登录</h1>
-  <p>审评员给一批拼配打香气、滋味、汤色，服务端按权重出分。这不是菜谱。</p>
+  <p>一批拼配由两名审评员联评：甲先提交三项分生成草稿，乙在另一会话引用同一草稿号交齐，服务端按两人均值合成正式行。这不是菜谱。</p>
   {% if error %}<p>{{ error }}</p>{% endif %}
   <input name="username" value="taster" />
   <input name="password" type="password" value="tea123456" />
   <button>登录</button>
-  <p>taster / tea123456 可审评；observer / look123456 只看</p>
+  <p>taster / tea123456、taster2 / tea234567 为审评员；observer / look123456 只看，看不到联评入口</p>
 </form>
 {% endblock %}

@@ -33,6 +33,23 @@ def main():
             created_by text NOT NULL
         )"""
     )
+    cur.execute(
+        """CREATE TABLE IF NOT EXISTS joint_drafts (
+            draft_no text PRIMARY KEY,
+            lot text NOT NULL,
+            aroma_a double precision NOT NULL,
+            taste_a double precision NOT NULL,
+            liquor_a double precision NOT NULL,
+            taster_a text NOT NULL,
+            aroma_b double precision,
+            taste_b double precision,
+            liquor_b double precision,
+            taster_b text,
+            cupping_id integer,
+            created_at timestamptz NOT NULL DEFAULT now()
+        )"""
+    )
+    cur.execute("CREATE SEQUENCE IF NOT EXISTS joint_draft_seq")
     cur.execute("SELECT COUNT(*) FROM cuppings")
     if cur.fetchone()[0] == 0:
         for lot, aroma, taste, liquor in (("春茶-A", 8, 8, 7), ("夏茶-C", 5, 4, 6)):
